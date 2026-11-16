@@ -54,9 +54,16 @@ function mascaraCEP(campo) {
   campo.value = campo.value.replace(/\D/g, '').replace(/(\d{5})(\d)/, '$1-$2');
 }
 
+function dataValida(texto) {
+  let partes = texto.split('/');
+  let data = new Date(partes[2], partes[1] - 1, partes[0]);
+  return partes[2] >= 1900 && data.getDate() == partes[0] && data.getMonth() == partes[1] - 1 && data <= new Date();
+}
+
 function cadastrar(evento) {
   evento.preventDefault();
   let usuarios = pegarLista('usuarios');
+  if (!dataValida(valor('nascimento'))) return alert('Digite uma data de nascimento válida.');
   if (valor('senha') != valor('confirmarSenha')) return alert('As senhas não são iguais.');
   if (usuarios.find(u => u.email == valor('email'))) return alert('Este e-mail já está cadastrado.');
   let usuario = { email: valor('email'), cpf: valor('cpf'), senha: valor('senha') };
@@ -202,6 +209,7 @@ function carregarPerfil() {
 
 function salvarPerfil(evento) {
   evento.preventDefault();
+  if (!dataValida(valor('nascimento'))) return alert('Digite uma data de nascimento válida.');
   let usuarios = pegarLista('usuarios');
   let usuario = usuarios.find(u => u.email == localStorage.getItem('logado'));
   for (let campo of camposPerfil) usuario[campo] = valor(campo);
