@@ -6,12 +6,9 @@ namespace SushiRestaurant
 {
     internal class Cliente
     {
-        // Atributos da classe - conforme os campos da tabela de clientes (BD)
         private int id;
         private string nome, email, cpf, telefone, cep, rua, numero, complemento, bairro, cidade, uf;
         private DateTime dtnasc;
-
-        // Encapsulamento para todos os atributos
 
         public void SetId(int id)
         {
@@ -143,28 +140,20 @@ namespace SushiRestaurant
             return this.uf;
         }
 
-        //Métodos do CRUD
-        //1º passo: instanciar a classe de conexão:
-
         Conexao db = new Conexao();
 
-        //Obs.: MySqlHelper.EscapeString() trata textos com apóstrofo (ex.: Rua D'Ávila) para não quebrar a instrução SQL.
-
-        //2º passo: criar o método de InserirCliente:
         public void InserirCliente()
         {
             string inserir = $"INSERT INTO tblClientes VALUES (null, '{MySqlHelper.EscapeString(nome)}', '{MySqlHelper.EscapeString(email)}', '{MySqlHelper.EscapeString(cpf)}', '{MySqlHelper.EscapeString(telefone)}', '{dtnasc.ToString("yyyy-MM-dd")}', '{MySqlHelper.EscapeString(cep)}', '{MySqlHelper.EscapeString(rua)}', '{MySqlHelper.EscapeString(numero)}', '{MySqlHelper.EscapeString(complemento)}', '{MySqlHelper.EscapeString(bairro)}', '{MySqlHelper.EscapeString(cidade)}', '{MySqlHelper.EscapeString(uf)}');";
             db.ExecutarComando(inserir);
         }
 
-        //3º passo: criar o método de AlterarCliente (o cliente é identificado pelo e-mail, igual no site):
         public void AlterarCliente()
         {
             string alterar = $"UPDATE tblClientes SET nome = '{MySqlHelper.EscapeString(nome)}', cpf = '{MySqlHelper.EscapeString(cpf)}', telefone = '{MySqlHelper.EscapeString(telefone)}', dtnasc = '{dtnasc.ToString("yyyy-MM-dd")}', cep = '{MySqlHelper.EscapeString(cep)}', rua = '{MySqlHelper.EscapeString(rua)}', numero = '{MySqlHelper.EscapeString(numero)}', complemento = '{MySqlHelper.EscapeString(complemento)}', bairro = '{MySqlHelper.EscapeString(bairro)}', cidade = '{MySqlHelper.EscapeString(cidade)}', uf = '{MySqlHelper.EscapeString(uf)}' WHERE email = '{MySqlHelper.EscapeString(email)}';";
             db.ExecutarComando(alterar);
         }
 
-        //4º passo: criar o método que verifica se o cliente já está cadastrado no banco:
         public bool ExisteCliente()
         {
             string consulta = $"SELECT id FROM tblClientes WHERE email = '{MySqlHelper.EscapeString(email)}';";
