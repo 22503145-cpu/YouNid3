@@ -174,6 +174,22 @@ function mostrarPedidos() {
   lista.innerHTML = html || vazio('Nenhum pedido encontrado.');
 }
 
+function dataParaBanco(data) {
+  let partes = data.replace(',', '').split(/\s+/);
+  let dia = partes[0].split('/').reverse().join('-');
+  return partes[1] ? dia + ' ' + partes[1] : dia;
+}
+
+function gerarJson() {
+  let clientes = pegarLista('usuarios').map(u => ({ nome: u.nome, email: u.email, cpf: u.cpf, telefone: u.telefone, nascimento: dataParaBanco(u.nascimento), cep: u.cep, rua: u.rua, numero: u.numero, complemento: u.complemento, bairro: u.bairro, cidade: u.cidade, uf: u.uf }));
+  let pedidos = pegarLista('pedidos').map(p => ({ numero: p.numero, email: p.email, data: dataParaBanco(p.data), pagamento: p.pagamento, total: Number(p.total.toFixed(2)), itens: p.itens.map(i => ({ produto: i.nome, preco: i.preco, quantidade: i.quantidade })) }));
+  if (pedidos.length == 0) return alert('Ainda não há pedidos para gerar o JSON.');
+  let link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([JSON.stringify({ clientes: clientes, pedidos: pedidos }, null, 2)], { type: 'application/json' }));
+  link.download = 'pedidos.json';
+  link.click();
+}
+
 function carregarPerfil() {
   let usuario = usuarioLogado();
   if (!usuario) return document.getElementById('perfil').innerHTML = vazio('Entre na sua conta para ver seu perfil. <a href="cadastro.html#login" class="link">Entrar</a>');

@@ -209,6 +209,10 @@ body.escuro .logo {
   color: var(--texto-suave);
 }
 
+.titulo-pagina .btn {
+  margin-top: 12px;
+}
+
 .campo-busca {
   background: var(--caixa);
   margin-bottom: 15px;
